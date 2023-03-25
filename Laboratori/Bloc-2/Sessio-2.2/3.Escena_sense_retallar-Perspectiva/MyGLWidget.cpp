@@ -2,6 +2,7 @@
 #include "MyGLWidget.h"
 #include <iostream>
 #include <stdio.h>
+using namespace std;
 
 #define printOpenGLError() printOglError(__FILE__, __LINE__)
 #define CHECK() printOglError(__FILE__, __LINE__,__FUNCTION__)
@@ -53,11 +54,15 @@ void MyGLWidget::initializeGL(){
     BL2GLWidget::initializeGL();
     glEnable(GL_DEPTH_TEST);
     creaBuffersModel();
-    creaBuffersTerra();
+    creaBuffersTerra(); 
+    puntmin = glm::vec3 (-2,-1,-2);
+    puntmax = glm::vec3 (2,1,2);
+    centreRadi(puntmin,puntmax);
     ini_camera();
     projectTransform();
     viewTransform();
     angle = 0.0f;
+   
 }
 void MyGLWidget::carregaShaders(){
     BL2GLWidget::carregaShaders();
@@ -66,7 +71,7 @@ void MyGLWidget::carregaShaders(){
 }
 
 void MyGLWidget::projectTransform(){
-    glm::mat4 Proj = glm::perspective (fov,ra,znear,zfar);
+    glm::mat4 Proj = glm::perspective (fov,raw,znear,zfar);
     glUniformMatrix4fv(projLoc,1,GL_FALSE,&Proj[0][0]);
 }
 void MyGLWidget::viewTransform(){
@@ -75,11 +80,12 @@ void MyGLWidget::viewTransform(){
 }
 
 void MyGLWidget::ini_camera(){
-    fov = float(M_PI)/2.0f;
-    ra = 1.0f;
-    znear = 0.4f;
-    zfar = 3.0f;
-    obs = glm::vec3(0,0,1);
+    fovIni = 2*asin(radiEsfera/(2*radiEsfera));
+    fov = fovIni;
+    raw = 1.0f;
+    znear = radiEsfera;
+    zfar = 3.0f*radiEsfera;
+    obs = glm::vec3(0,0,2*radiEsfera);
     vrp = glm::vec3(0,0,0);
      up = glm::vec3(0,1,0);
 }
@@ -121,7 +127,7 @@ void MyGLWidget::paintGL () {
   // Carreguem la transformació de model
   modelTransform ();
 
-  // Activem el VAO per a pintar el model
+  // Activem el VAO per a pintar la caseta 
   glBindVertexArray (VAO_model);
 
   // pintem
@@ -146,7 +152,7 @@ void MyGLWidget::keyPressEvent(QKeyEvent* event)
       escala -= 0.05;
       break;
     }
-    case Qt::Key_R: {
+    case Qt::Key_R: { 
       angle += float(M_PI)/4.0f;
       break;
     }
@@ -215,5 +221,25 @@ void MyGLWidget::creaBuffersTerra ()
   glEnableVertexAttribArray(colorLoc);
 
   glBindVertexArray (0);
+}
+
+
+void MyGLWidget::centreRadi(glm::vec3 pmin, glm::vec3 pmax){
+	centreEscena[0] = (pmax.x+pmin.x)/2.0f;
+	centreEscena[1] = (pmax.y+pmin.y)/2.0f;
+	centreEscena[2] = (pmax.z+pmin.z)/2.0f;
+
+        radiEsfera = (distance(pmin,pmax))/2.0f;
+        //cout << "centreEscena = (" << centreEscena[0] << "," << centreEscena[1] << "," << centreEscena[2] << ")" << endl;
+        //cout << "radiEsfera = " << radiEsfera << endl;
+}
+
+void MyGLWidget::resizeGL (int w, int h) {
+    BL2GLWidget::resizeGL(w,h) ;
+    rav = float(w)/float(h);
+    fov = fovIni;
+    raw = rav;
+    if (rav < 1.0f) fov = 2.0f*atan(tan(fovIni/2.0f)/rav);
+    projectTransform();
 }
 

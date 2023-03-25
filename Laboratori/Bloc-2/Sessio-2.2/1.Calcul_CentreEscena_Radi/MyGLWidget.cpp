@@ -2,6 +2,7 @@
 #include "MyGLWidget.h"
 #include <iostream>
 #include <stdio.h>
+using namespace std;
 
 #define printOpenGLError() printOglError(__FILE__, __LINE__)
 #define CHECK() printOglError(__FILE__, __LINE__,__FUNCTION__)
@@ -58,6 +59,9 @@ void MyGLWidget::initializeGL(){
     projectTransform();
     viewTransform();
     angle = 0.0f;
+    puntmin = glm::vec3 (-2,-1,-2);
+    puntmax = glm::vec3 (2,1,2);
+    centreRadi(puntmin,puntmax);
 }
 void MyGLWidget::carregaShaders(){
     BL2GLWidget::carregaShaders();
@@ -121,7 +125,7 @@ void MyGLWidget::paintGL () {
   // Carreguem la transformació de model
   modelTransform ();
 
-  // Activem el VAO per a pintar el model
+  // Activem el VAO per a pintar la caseta 
   glBindVertexArray (VAO_model);
 
   // pintem
@@ -215,5 +219,16 @@ void MyGLWidget::creaBuffersTerra ()
   glEnableVertexAttribArray(colorLoc);
 
   glBindVertexArray (0);
+}
+
+
+void MyGLWidget::centreRadi(glm::vec3 pmin, glm::vec3 pmax){
+	centreEscena[0] = (pmax.x+pmin.x)/2.0f;
+	centreEscena[1] = (pmax.y+pmin.y)/2.0f;
+	centreEscena[2] = (pmax.z+pmin.z)/2.0f;
+	
+        radiEsfera = (distance(pmin,pmax))/2.0f;
+        //cout << "centreEscena = (" << centreEscena[0] << "," << centreEscena[1] << "," << centreEscena[2] << ")" << endl;
+        //cout << "radiEsfera = " << radiEsfera << endl;
 }
 

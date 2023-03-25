@@ -2,6 +2,7 @@
 #include "MyGLWidget.h"
 #include <iostream>
 #include <stdio.h>
+using namespace std;
 
 #define printOpenGLError() printOglError(__FILE__, __LINE__)
 #define CHECK() printOglError(__FILE__, __LINE__,__FUNCTION__)
@@ -52,13 +53,20 @@ MyGLWidget::~MyGLWidget() {
 void MyGLWidget::initializeGL(){
     BL2GLWidget::initializeGL();
     glEnable(GL_DEPTH_TEST);
+    ortogonal = false;
+    nuevaAltura = 4.0f;
     creaBuffersModel();
     creaBuffersTerra();
+    capsaModel(); 
+    puntmin = glm::vec3 (-2.5f,0.0f,-2.5f);
+    puntmax = glm::vec3 (2.5f,4,2.5f);
+    centreRadi(puntmin,puntmax);
     ini_camera();
     projectTransform();
     viewTransform();
     angle = 0.0f;
 }
+
 void MyGLWidget::carregaShaders(){
     BL2GLWidget::carregaShaders();
     projLoc = glGetUniformLocation(program->programId(),"proj");
@@ -66,7 +74,9 @@ void MyGLWidget::carregaShaders(){
 }
 
 void MyGLWidget::projectTransform(){
-    glm::mat4 Proj = glm::perspective (fov,ra,znear,zfar);
+    glm::mat4 Proj (1.0f);
+    if (ortogonal) Proj = glm::ortho(-radiEsfera,radiEsfera,-radiEsfera,radiEsfera,znear,zfar);
+    else Proj = glm::perspective (fov,raw,znear,zfar);
     glUniformMatrix4fv(projLoc,1,GL_FALSE,&Proj[0][0]);
 }
 void MyGLWidget::viewTransform(){
@@ -75,17 +85,19 @@ void MyGLWidget::viewTransform(){
 }
 
 void MyGLWidget::ini_camera(){
-    fov = float(M_PI)/2.0f;
-    ra = 1.0f;
-    znear = 0.4f;
-    zfar = 3.0f;
-    obs = glm::vec3(0,0,1);
-    vrp = glm::vec3(0,0,0);
+    fovIni = 2*asin(radiEsfera/(2*radiEsfera));
+    fov = fovIni;
+    raw = 1.0f;
+    znear = radiEsfera;
+    zfar = 3.0f*radiEsfera;
+    
+    vrp = glm::vec3(centreEscena);
+    obs = vrp + (2.0f*radiEsfera)*glm::vec3(0.0f,0.0f,1.0f);
      up = glm::vec3(0,1,0);
 }
 
 void MyGLWidget::creaBuffersModel(){
-    m.load("../../models/HomerProves.obj");
+    m.load("../../models/Patricio.obj");
     glGenVertexArrays(1,&VAO_model);
     glBindVertexArray(VAO_model);
 
@@ -121,7 +133,7 @@ void MyGLWidget::paintGL () {
   // Carreguem la transformació de model
   modelTransform ();
 
-  // Activem el VAO per a pintar el model
+  // Activem el VAO per a pintar el model 
   glBindVertexArray (VAO_model);
 
   // pintem
@@ -150,6 +162,11 @@ void MyGLWidget::keyPressEvent(QKeyEvent* event)
       angle += float(M_PI)/4.0f;
       break;
     }
+    case Qt::Key_O: {
+      ortogonal = !ortogonal;
+      projectTransform();
+      break;
+    }
     default: event->ignore(); break;
   }
   update();
@@ -160,13 +177,14 @@ void MyGLWidget::modelTransform ()
   // Matriu de transformació de model
   glm::mat4 transform (1.0f);
   transform = glm::rotate(transform,angle,glm::vec3(0,1,0));
-  transform = glm::scale(transform, glm::vec3(escala));
+  transform = glm::scale(transform, glm::vec3(escalaModel));
+  transform = glm::translate(transform,glm::vec3(-centreModelBase));
   glUniformMatrix4fv(transLoc, 1, GL_FALSE, &transform[0][0]);
 }
 
 void MyGLWidget::modelTransformTerra () 
 {
-  // Matriu de transformació de model
+  // Matriu de transformació del terra
   glm::mat4 transform (1.0f);
   transform = glm::scale(transform, glm::vec3(escala));
   glUniformMatrix4fv(transLoc, 1, GL_FALSE, &transform[0][0]);
@@ -176,13 +194,13 @@ void MyGLWidget::creaBuffersTerra ()
   // Dades del terra
   // Dos VBOs, un amb posició i l'altre amb color
   glm::vec3 posicio[6] = {
-	glm::vec3(2.0, -1.0, 2.0),
-	glm::vec3(2.0, -1.0, -2.0),
-	glm::vec3(-2.0, -1.0, -2.0),
+	glm::vec3(2.50, 0.0, 2.50),
+	glm::vec3(2.50, 0.0, -2.50),
+	glm::vec3(-2.50, 0.0, -2.50),
 	
-	glm::vec3(2.0, -1.0, 2.0),
-	glm::vec3(-2.0, -1.0, -2.0),
-	glm::vec3(-2.0, -1.0, 2.0)
+	glm::vec3(2.50, 0.0, 2.50),
+	glm::vec3(-2.50, 0.0, -2.50),
+	glm::vec3(-2.50, 0.0, 2.50)
   }; 
   glm::vec3 color[6] = {
 	glm::vec3(1,0,0),
@@ -215,5 +233,63 @@ void MyGLWidget::creaBuffersTerra ()
   glEnableVertexAttribArray(colorLoc);
 
   glBindVertexArray (0);
+}
+
+
+void MyGLWidget::centreRadi(glm::vec3 pmin, glm::vec3 pmax){
+	centreEscena[0] = (pmax.x+pmin.x)/2.0f;
+	centreEscena[1] = (pmax.y+pmin.y)/2.0f;
+	centreEscena[2] = (pmax.z+pmin.z)/2.0f;
+	
+        radiEsfera = (distance(pmin,pmax))/2.0f;
+        cout << "centreEscena = (" << centreEscena[0] << "," << centreEscena[1] << "," << centreEscena[2] << ")" << endl;
+        cout << "radiEsfera = " << radiEsfera << endl;
+}
+
+void MyGLWidget::resizeGL (int w, int h) {
+    BL2GLWidget::resizeGL(w,h) ;
+    rav = float(w)/float(h);
+    fov = fovIni;
+    raw = rav;
+    if (rav < 1.0f) fov = 2.0f*atan(tan(fovIni/2.0f)/rav);
+    projectTransform();
+}
+
+void MyGLWidget::capsaModel(){
+    glm::vec3 min;
+    glm::vec3 max;
+    min[0] = m.vertices()[0];
+    min[1] = m.vertices()[1];
+    min[2] = m.vertices()[2];
+    max = min;
+
+    for (unsigned int i = 0; i < m.vertices().size(); i+=3) {
+    // Escric per pantalla les coordenades del vèrtexs
+        std::cout << "(x, y, z) = (" << m.vertices()[i] << ", " << m.vertices()[i+1] << ", " << m.vertices()[i+2] << ")" << std::endl;
+	if(m.vertices()[i] < min[0]) min[0] = m.vertices()[i];
+	if(m.vertices()[i+1] < min[1]) min[1] = m.vertices()[i+1];
+	if(m.vertices()[i+2] < min[2]) min[2] = m.vertices()[i+2];
+	
+	if(m.vertices()[i] > max[0]) max[0] = m.vertices()[i];
+	if(m.vertices()[i+1] > max[1]) max[1] = m.vertices()[i+1];
+	if(m.vertices()[i+2] > max[2]) max[2] = m.vertices()[i+2];
+   }
+   std::cout << "MIN(x, y, z) = (" << min[0] << "," << min[1] << "," << min[2] << ")" << std::endl;
+   std::cout << "MAX(x, y, z) = (" << max[0] << "," << max[1] << "," << max[2] << ")" << std::endl;
+  	
+        centreModel[0] = (max.x+min.x)/2.0f;
+	centreModel[1] = (max.y+min.y)/2.0f;
+	centreModel[2] = (max.z+min.z)/2.0f;
+	
+	centreModelBase[0] = centreModel.x;
+	centreModelBase[1] = min.y;
+        centreModelBase[2] = centreModel.z;
+  
+  std::cout << "CentreModel(x, y, z) = (" << centreModel[0] << "," << centreModel[1] << "," << centreModel[2] << ")" << std::endl;
+  std::cout << "CentreModelBase(x, y, z) = (" << centreModelBase[0] << "," << centreModelBase[1] << "," << centreModelBase[2] << ")" << std::endl;
+ 	
+	altura = max.y - min.y;
+	std::cout << "altura: " << altura << std::endl;
+	escalaModel = nuevaAltura/altura;
 }
 
