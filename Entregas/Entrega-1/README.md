@@ -17,7 +17,7 @@ En un tablero de ajedrez el caballo es una de las piezas más valoradas. El obje
   * [Uniform](#uniform)
   * [Identificador](#identificador)
   * [Linkado](#linkado)
-  * [Assignación de valores](#assignación-de-valores)
+  * [Asignación de valores](#asignación-de-valores)
 * [Apartado 2](#apartado-2)
   * [Reescalado de la casilla](#reescalado-de-la-casilla)
   * [Pintar tablero](#pintar-tablero)
