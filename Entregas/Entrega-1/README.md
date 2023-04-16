@@ -129,7 +129,7 @@ void MyGLWidget::modelTransformQuadrat(glm::vec3 posicio) {
 }
 ```
 
-Añade también a la escena una pieza de caballo blanco y una pieza de caballo negro orientadas correctamente. La escala de las piezas del caballo será tal que su lado más largo mida 0.2.
+
 
 #### Pintar tablero
 Podemos ver el tablero en realidad como una matriz de casillas, donde si se le asigna un número a cada casilla, las casillas pares son de color negro y las casillas impares de color blanco.
@@ -164,7 +164,7 @@ void MyGLWidget::paintGL() {
     ...
 }
 ```
-
+Añade también a la escena una pieza de caballo blanco y una pieza de caballo negro orientadas correctamente. La escala de las piezas del caballo será tal que su lado más largo mida 0.2.
 #### Mover caballo al Origen de Coordenadas
 Recuerda que dentro del código que te dan, en los comentarios de creaBuffersCavall() te indican los valores de los puntos mínimos y máximos. Con ello puedes calcular cuanto mide el lado más largo, en este caso, 2.5.
 ```cpp
@@ -261,16 +261,16 @@ TG = glm::translate(TG,glm::vec3(0.06,-0.1,0.0));
 <em>Caballo centrado en el origen de coordenadas</em>
 </p>
 </div>
+
 ```cpp
-void MyGLWidget::modelTransformCavall(glm::vec3 posicio)
-{
-  glm::mat4 TG(1.0f);
-  TG = glm::translate(TG, posicio);
-  TG = glm::translate(TG,glm::vec3(0.06,-0.1,0.0));  
-  TG = glm::scale(TG,glm::vec3(0.08,0.08,0.08));  
-  TG = glm::rotate(TG,float(M_PI)/2,glm::vec3(0.0f,0.0f,1.0f));
-  TG = glm::translate(TG,glm::vec3(-0.1,-0.1,0.0));  
-  glUniformMatrix4fv(TGLoc, 1, GL_FALSE, &TG[0][0]);
+void MyGLWidget::modelTransformCavall(glm::vec3 posicio) {
+    glm::mat4 TG(1.0f);
+    TG = glm::translate(TG, posicio);
+    TG = glm::translate(TG,glm::vec3(0.06,-0.1,0.0));  
+    TG = glm::scale(TG,glm::vec3(0.08,0.08,0.08));  
+    TG = glm::rotate(TG,float(M_PI)/2,glm::vec3(0.0f,0.0f,1.0f));
+    TG = glm::translate(TG,glm::vec3(-0.1,-0.1,0.0));  
+    glUniformMatrix4fv(TGLoc, 1, GL_FALSE, &TG[0][0]);
 }
 ```
 
