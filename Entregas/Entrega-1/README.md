@@ -4,7 +4,7 @@ En un tablero de ajedrez el caballo es una de las piezas más valoradas. El obje
 
 <div>
 <p style = 'text-align:center;'>
-<img src="./imagenes/escenaFinal.gif"><br>
+<img src="./Exercici-1-Imagenes/escenaFinal.gif"><br>
 <em>Escena Final</em>
 </p>
 </div>
@@ -38,7 +38,7 @@ Te proporcionamos un código básico que crea los buffers de un cuadrado de lado
 
 <div id="figura-1">
 <p style = 'text-align:center;'>
-<img src="./imagenes/escenaInicial.png"><br>
+<img src="./Exercici-1-Imagenes/escenaInicial.png"><br>
 <em>Escena Inicial</em>
 </p>
 </div>
@@ -108,7 +108,7 @@ void MyGLWidget::paintGL () {
 
 <div>
 <p style = 'text-align:center;'>
-<img src="./imagenes/figura-1.png"><br>
+<img src="./Exercici-1-Imagenes/figura-1.png"><br>
 <em>Escena Inicial con colores</em>
 </p>
 </div>
@@ -137,7 +137,7 @@ Por tanto, podemos tratar de crear el tablero haciendo un bucle anidado y poner 
 
 <div>
 <p style = 'text-align:center;'>
-<img src="./imagenes/figura-2.png"><br>
+<img src="./Exercici-1-Imagenes/figura-2.png"><br>
 <em>La casilla azul es la primera que se pinta. Está situada abajo a la izquierda, con centro en (-0,0875,-0.875). Para pintar las siguientes casillas, es necesario realizar desplazamientos de 0.25</em>
 </p>
 </div>
@@ -182,7 +182,7 @@ El problema es que el reescalado produce una traslación de los vértices, cambi
 
 <div>
 <p style = 'text-align:center;'>
-<img src="./imagenes/figura-3.png"><br>
+<img src="./Exercici-1-Imagenes/figura-3.png"><br>
 <em>Posicio original del cavall, donde su lado mas largo mide 2.5</em>
 </p>
 </div>
@@ -195,7 +195,7 @@ Para conseguir lo que queremos tenemos que tener uno de los vértices en el orig
 ```
 <div>
 <p style = 'text-align:center;'>
-<img src="./imagenes/figura-4.png"><br>
+<img src="./Exercici-1-Imagenes/figura-4.png"><br>
 <em>Caballo trasladado al centro de coordenadas</em>
 </p>
 </div>
@@ -212,7 +212,7 @@ Recuerda que los ángulos positivos son en sentido antihorario y los negativos e
 
 <div>
 <p style = 'text-align:center;'>
-<img src="./imagenes/figura-5.png"><br>
+<img src="./Exercici-1-Imagenes/figura-5.png"><br>
 <em>Caballo después haber sido rotado 90 grados</em>
 </p>
 </div>
@@ -231,7 +231,7 @@ TG = glm::scale(TG,glm::vec3(0.08,0.08,0.08));
 ```
 <div>
 <p style = 'text-align:center;'>
-<img src="./imagenes/figura-6.png"><br>
+<img src="./Exercici-1-Imagenes/figura-6.png"><br>
 <em>Caballo reescalado para que tenga el lado más grande igual a 0.2</em>
 </p>
 </div>
@@ -257,7 +257,7 @@ TG = glm::translate(TG,glm::vec3(0.06,-0.1,0.0));
 ```
 <div>
 <p style = 'text-align:center;'>
-<img src="./imagenes/figura-7.png"><br>
+<img src="./Exercici-1-Imagenes/figura-7.png"><br>
 <em>Caballo centrado en el origen de coordenadas</em>
 </p>
 </div>
@@ -286,7 +286,7 @@ El centro del caballo se encuentra en el punto (0.0, 0.0, 0.0). Solo hay que res
 ```
 <div>
 <p style = 'text-align:center;'>
-<img src="./imagenes/figura-8.png"><br>
+<img src="./Exercici-1-Imagenes/figura-8.png"><br>
 <em>Translación del caballo desde F' a F''</em>
 </p>
 </div>
@@ -314,7 +314,7 @@ void MyGLWidget::paintGL () {
 ```
 <div>
 <p style = 'text-align:center;'>
-<img src="./imagenes/escenaFinal-1.png"><br>
+<img src="./Exercici-1-Imagenes/escenaFinal-1.png"><br>
 <em>Escena Final sin funcionalidades</em>
 </p>
 </div>
