@@ -11,12 +11,6 @@ out vec4 FragColor;
 
 // Valors per als components que necessitem dels focus de llum
 vec3 llumAmbient = vec3(0.2, 0.2, 0.2);
-//vec3 llumAmbient = vec3(0.8,0.8,0.8);
-//vec3 posFocus = vec3(-0.5, 0, -15);
-//vec3 posFocus = vec3(-0.5,0,-16);
-//vec3 posFocus8 = vec3(7.0,5.0,0.0);
-//vec3 posFocus3 = vec3(0.0,0.0,-15.0);
-//vec3 posFocus3 = vec3(0.0,0.0,-21.0);
 
 
 uniform vec3 posFocusCam;
